@@ -1,18 +1,30 @@
-name: Docker Image CI
+name: Build and Push Docker Image
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    paths:
+      - '**/*'
 
 jobs:
-
-  build:
-
+  build-and-push:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+    - name: Check out the code
+      uses: actions/checkout@v3
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+      
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: Dockerfile
+        push: true
+        tags: |
+          akashgowdap16/hello-world:latest
+          akashgowdap16/hello-world:${{ github.sha }}
+        platforms: linux/amd64
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
