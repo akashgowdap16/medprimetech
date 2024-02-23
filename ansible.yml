@@ -1,0 +1,16 @@
+---
+- name: Pull Docker image and run with Docker Compose
+  hosts: localhost
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Pull Docker image
+      shell: docker pull akashgowdap16/hello-world:main
+      register: docker_pull_output
+      ignore_errors: yes  # Ignore errors in case the image is already pulled
+
+    - name: Run Docker Compose
+      shell: docker-compose -f /home/ubuntu/docker/docker-compose.yml up -d
+      args:
+        chdir: /home/ubuntu/
+      register: docker_compose_output

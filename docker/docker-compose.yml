@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  hello-world:
+    image: akashgowdap16/hello-world:main
+    ports:
+      - "8080:80"
+
